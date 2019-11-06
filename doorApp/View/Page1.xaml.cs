@@ -16,11 +16,11 @@ namespace doorApp.View
         public Page1()
         {
             InitializeComponent();
-            btnOrange.Clicked += BtnOrange_Clicked;
+            btnAddDev.Clicked += BtnAddDev_Clicked;
         }
 
         //Button to simulate adding a new card to the device list
-        private void BtnOrange_Clicked(object sender, EventArgs e)
+        private void BtnAddDev_Clicked(object sender, EventArgs e)
         { 
             newFrame("123", "321", devices + 1);
             devices++;

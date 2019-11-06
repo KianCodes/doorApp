@@ -4,7 +4,8 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="doorApp.View.Page1">
+             x:Class="doorApp.View.Page1"
+             Title="Device List">
     <ContentPage.Content>
         <StackLayout>
             <Grid Margin="25,40,25,25"
@@ -31,7 +32,7 @@
                     BackgroundColor= "AntiqueWhite"
                     Text="Add a Device" 
                     TextColor="Black"
-                    x:Name="btnOrange"
+                    x:Name="btnAddDev"
                 />
 
             </Grid>

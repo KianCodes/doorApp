@@ -4,109 +4,23 @@
              x:Class="doorApp.View.MainPage"
              Title="DOOR Main Menu">
     <StackLayout>
-        <Grid Margin="25,40,25,25">
-            <Grid.RowDefinitions>
-                <RowDefinition Height=".8*"/>
-                <RowDefinition Height=".2*"/>
-
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width=".33*" />
-                <ColumnDefinition Width=".33*"  />
-                <ColumnDefinition Width=".33*" />
-            </Grid.ColumnDefinitions>
-            <ScrollView Grid.Row="0" Grid.ColumnSpan="3">
-                <StackLayout>
-                    <Frame BorderColor="Gray"
-                   CornerRadius="5"
-                   Padding="8">
-                        <StackLayout>
-                            <Label Text="Device 1"
-                           FontSize="Medium"
-                           FontAttributes="Bold" />
-                            <BoxView Color="Gray"
-                             HeightRequest="2"
-                             HorizontalOptions="Fill" />
-                            <Label Text= "IP Address:&#x0a;MAC Address:&#x0a;"/>
-                        </StackLayout>
-                    </Frame>
-                    <Frame BorderColor="Gray"
-                   CornerRadius="5"
-                   Padding="8">
-                        <StackLayout>
-                            <Label Text="Device 2"
-                           FontSize="Medium"
-                           FontAttributes="Bold" />
-                            <BoxView Color="Gray"
-                             HeightRequest="2"
-                             HorizontalOptions="Fill" />
-                            <Label Text= "IP Address:&#x0a;MAC Address:&#x0a;"/>
-                        </StackLayout>
-                    </Frame>
-                    <Frame BorderColor="Gray"
-                   CornerRadius="5"
-                   Padding="8">
-                        <StackLayout>
-                            <Label Text="Device 3"
-                           FontSize="Medium"
-                           FontAttributes="Bold" />
-                            <BoxView Color="Gray"
-                             HeightRequest="2"
-                             HorizontalOptions="Fill" />
-                            <Label Text= "IP Address:&#x0a;MAC Address:&#x0a;"/>
-                        </StackLayout>
-                    </Frame>
-                    <Frame BorderColor="Gray"
-                   CornerRadius="5"
-                   Padding="8">
-                        <StackLayout>
-                            <Label Text="Device 4"
-                           FontSize="Medium"
-                           FontAttributes="Bold" />
-                            <BoxView Color="Gray"
-                             HeightRequest="2"
-                             HorizontalOptions="Fill" />
-                            <Label Text= "IP Address:&#x0a;MAC Address:&#x0a;"/>
-                        </StackLayout>
-                    </Frame>
-                    <Frame BorderColor="Gray"
-                   CornerRadius="5"
-                   Padding="8">
-                        <StackLayout>
-                            <Label Text="Device 5"
-                           FontSize="Medium"
-                           FontAttributes="Bold" />
-                            <BoxView Color="Gray"
-                             HeightRequest="2"
-                             HorizontalOptions="Fill" />
-                            <Label Text= "IP Address:&#x0a;MAC Address:&#x0a;"/>
-                        </StackLayout>
-                    </Frame>
-                </StackLayout>
-            </ScrollView>
-
-
-            <Button Grid.Column="0"
-                    Grid.Row="1"
+        <Button
                     BackgroundColor="Red"
                     Text="Device List" 
                     TextColor="Yellow"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page1}"
-                />
-            <Button Grid.Column="1"
-                    Grid.Row="1"
+                    />
+        <Button 
                     BackgroundColor="Orange"
-                    Text="Button" 
+                    Text="Not Implemented" 
                     TextColor="Black"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
                     />
-            <Button Grid.Column="2"
-                    Grid.Row="1"
+        <Button 
                     BackgroundColor="DeepPink"
-                    Text="Button" 
+                    Text="Not Implemented" 
                     TextColor="LightPink"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
                     />
-        </Grid>
     </StackLayout>
 </ContentPage> 
