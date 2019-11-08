@@ -7,7 +7,9 @@ using Plugin.Fingerprint;
 using doorApp.Interfaces;
 using System.Threading.Tasks;
 using System.Configuration;
+using static doorApp.Droid.MainActivity;
 
+[assembly: Xamarin.Forms.Dependency(typeof(CloseApplication))]
 namespace doorApp.Droid
 {
     [Activity(Label = "doorApp", Icon = "@mipmap/icon", Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]

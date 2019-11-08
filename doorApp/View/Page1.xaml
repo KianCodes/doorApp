@@ -16,7 +16,7 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width=".33*" />
-                    <ColumnDefinition Width=".33*"  />
+                    <ColumnDefinition Width=".33*" />
                     <ColumnDefinition Width=".33*" />
                 </Grid.ColumnDefinitions>
                 
@@ -24,10 +24,10 @@
                     <!--StackLayout below is what contains the cards-->
                     <StackLayout x:Name="stackTest">
                         <!--devices connected-->
-                        <Label x:Name ="deviceOWRT" 
+                        <Label x:Name ="deviceOWRT" Text=""
                        ></Label>
                         <!--devices in database-->
-                        <Label x:Name ="deviceDB" 
+                        <Label x:Name ="deviceDB" Text=""
                        ></Label>
                     </StackLayout>
                 </ScrollView>

@@ -11,10 +11,10 @@
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page1}"
                     />
         <Button 
-                    BackgroundColor="Orange"
-                    Text="Not Implemented" 
+                    BackgroundColor="BurlyWood"
+                    Text="New Page" 
                     TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page2}"
                     />
         <Button 
                     BackgroundColor="DeepPink"
