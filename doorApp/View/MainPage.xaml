@@ -5,9 +5,9 @@
              Title="DOOR Main Menu">
     <StackLayout>
         <Button
-                    BackgroundColor="Red"
+                    BackgroundColor="Bisque"
                     Text="Device List" 
-                    TextColor="Yellow"
+                    TextColor="Black"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page1}"
                     />
         <Button 
@@ -17,10 +17,10 @@
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page2}"
                     />
         <Button 
-                    BackgroundColor="DeepPink"
-                    Text="Not Implemented" 
-                    TextColor="LightPink"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
+                    BackgroundColor="DarkSlateBlue"
+                    Text="Other New Page"
+                    TextColor="Black"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page3}"
                     />
     </StackLayout>
 </ContentPage> 
