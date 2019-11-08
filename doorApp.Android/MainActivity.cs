@@ -6,6 +6,7 @@ using Plugin.CurrentActivity;
 using Plugin.Fingerprint;
 using doorApp.Interfaces;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace doorApp.Droid
 {
@@ -23,6 +24,7 @@ namespace doorApp.Droid
             CrossFingerprint.SetCurrentActivityResolver(() => CrossCurrentActivity.Current.Activity);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            
 
             var width = Resources.DisplayMetrics.WidthPixels;
             var height = Resources.DisplayMetrics.HeightPixels;

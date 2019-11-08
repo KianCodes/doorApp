@@ -30,12 +30,25 @@
                 <Button
                     Grid.Column="1" Grid.Row="1"
                     BackgroundColor= "AntiqueWhite"
-                    Text="Add a Device" 
+                    Text="Refresh" 
                     TextColor="Black"
                     x:Name="btnAddDev"
                 />
+                <Button
+                    Grid.Column="1" Grid.Row="2"
+                    BackgroundColor= "Red"
+                    Text="Delete devices DB" 
+                    TextColor="White"
+                    x:Name="btnDeleteDB"
+                />
 
+                <Label x:Name ="deviceOWRT" Grid.Column="1" Grid.Row="3"
+                       ></Label>
+
+                <Label x:Name ="deviceDB" Grid.Column="3" Grid.Row="3"
+                       ></Label>
             </Grid>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
