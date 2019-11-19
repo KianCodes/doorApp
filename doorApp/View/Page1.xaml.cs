@@ -35,6 +35,7 @@ namespace doorApp.View
         private string[] arrS2 = new string[255];
         public IP_MAC[] arrCopy = new IP_MAC[255];
         private bool dbZero = true;
+        private bool owrtZero = true;
 
         private int numOWRT = 0;
         List<IP_MAC> listOWRT = new List<IP_MAC>();
@@ -99,9 +100,17 @@ namespace doorApp.View
 
 
             // Preventing APP to crash
-            if (tempListOWRT.Count == 0)
-                return;
+            if (tempListOWRT.Count == 0 && listDB.Count != 0)
+            {
+                scanDB();
+                // Placing devices into their respective labels
+                deviceOWRT.Text = tempDevices;
+                deviceDB.Text = tempDevices2;
 
+                return;
+            }
+            else if (tempListOWRT.Count == 0)
+                return;
 
             // Scanning DB
             scanDB();
@@ -206,6 +215,7 @@ namespace doorApp.View
 
             // Debugging
             Debug.WriteLine("Number of items in listDB: " + listDB.Count);
+            Debug.WriteLine("Number of items in listOWRT: " + tempListOWRT.Count);
 
         }
 
@@ -229,7 +239,8 @@ namespace doorApp.View
 
             // Placing into temp var
             if (listOWRT.Count != 0)
-                tempListOWRT = listOWRT;
+                tempListOWRT = listOWRT.ToList();
+            
 
         }
 
