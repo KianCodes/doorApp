@@ -17,7 +17,7 @@ using doorApp.Droid.Model;
 namespace doorApp.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Page1 : ContentPage
+    public partial class OldDeviceList : ContentPage
     {
         int devices = 0;
 
@@ -41,9 +41,7 @@ namespace doorApp.View
         List<IP_MAC> tempListOWRT = new List<IP_MAC>();
         List<Registration> listDB = new List<Registration>();
 
-
-
-        public Page1()
+        public OldDeviceList()
         {
             InitializeComponent();
             btnAddDev.Clicked += BtnAddDev_Clicked;
@@ -74,35 +72,29 @@ namespace doorApp.View
             string tempMAC = "";
             string tempIP = "";
 
-            // Preventing APP to crash
-            if (tempListOWRT.Count != 0)
-            {
-                tempMAC = tempListOWRT[0].MAC;
-                tempIP = tempListOWRT[0].IP;
-            }
-
-            deviceOWRT.Text = tempDevices;
-            deviceDB.Text = tempDevices2;
-          
-            Debug.WriteLine(tempMAC);
-            // Checking if DB is empty
-            if (listDB.Count == 0 && numOWRT != 0)
-            {
-                result = await DisplayActionSheet("New device connected:\n" +
-                    tempMAC, "Ignore", null, "ACCEPT", "DENY");
-
-                // INSERTING device into DB with the appropriate status
-                insertDB(result, tempMAC, tempIP);
-            }
-
-            //for (int i = 0; i < numDevices; i++)
+            //// Preventing APP to crash
+            //if (tempListOWRT.Count != 0)
             //{
-            //    newFrame(arrCopy[i].IP, arrCopy[i].MAC, i+1);
-            //    Task.Delay(1000);
+            //    tempMAC = tempListOWRT[0].MAC;
+            //    tempIP = tempListOWRT[0].IP;
             //}
 
-            ////newFrame("123", "321", devices + 1);
-            //devices++;
+            //deviceOWRT.Text = tempDevices;
+            //deviceDB.Text = tempDevices2;
+
+            //Debug.WriteLine(tempMAC);
+            //// Checking if DB is empty
+            //if (listDB.Count == 0 && numOWRT != 0)
+            //{
+            //    result = await DisplayActionSheet("New device connected:\n" +
+            //        tempMAC, "Ignore", null, "ACCEPT", "DENY");
+
+            //    // INSERTING device into DB with the appropriate status
+            //    insertDB(result, tempMAC, tempIP);
+            //}
+            newFrame("123", "321", devices + 1);
+            devices++;
+
         }
 
         //Function to create a new card for the device list.  
@@ -110,7 +102,7 @@ namespace doorApp.View
         //Will implement overloaded method using object as parameter
         private void newFrame(string ip, string mac, int device)
         {
-            stackTest.Children.Clear();
+            //stackTest.Children.Clear();
             Frame cardFrame = new Frame
             {
                 BorderColor = Color.Gray,

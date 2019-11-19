@@ -4,12 +4,34 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Title="Device List"
              x:Class="doorApp.View.Page2">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <AbsoluteLayout x:Name="absLayout">
+            
+            <ScrollView   AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+                <StackLayout x:Name="stackTest">
+                </StackLayout>
+
+            </ScrollView>
+
+            <Button x:Name="btn1" 
+                    Text="Refresh" 
+                    BackgroundColor="ForestGreen"
+                    CornerRadius="0"  
+                    TextColor="Black" 
+                    FontSize="20" 
+                    AbsoluteLayout.LayoutBounds="0,1, 205,55" 
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+            <Button x:Name="btn2" 
+                    Text="Delete" 
+                    BackgroundColor="PaleVioletRed" 
+                    CornerRadius="0"  
+                    TextColor="Black" 
+                    FontSize="20" 
+                    AbsoluteLayout.LayoutBounds="1,1, 205,55" 
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+        </AbsoluteLayout>
     </ContentPage.Content>
-</ContentPage>
+</ContentPage> 

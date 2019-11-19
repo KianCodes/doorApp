@@ -8,7 +8,7 @@
                     BackgroundColor="Bisque"
                     Text="Device List" 
                     TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page1}"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:OldDeviceList}"
                     />
         <Button 
                     BackgroundColor="BurlyWood"

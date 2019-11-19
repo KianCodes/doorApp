@@ -22,8 +22,8 @@ namespace doorApp.View
 
         public MainPage()
         {
-            fingerprint();
             this.BindingContext = new MainPageViewModel(this.Navigation);
+            InitializeComponent();
         }
 
 
@@ -35,9 +35,9 @@ namespace doorApp.View
             bool result = await CrossFingerprint.Current.IsAvailableAsync(true);
             if (result)
             {
-                var auth = await CrossFingerprint.Current.AuthenticateAsync("Authenticate");
+                var auth = await CrossFingerprint.Current.AuthenticateAsync("Please use your fingerprint for authentication");
                 if (auth.Authenticated)
-                    InitializeComponent();
+                    await DisplayAlert("Success", "Fingerprint authentication success", "OK");
                 else
                 {
                     await DisplayAlert("Failed", "Fingerprint authentication failed, app is closing.", "OK");
