@@ -47,7 +47,7 @@ namespace doorApp.View
             InitializeComponent();
             btnAddDev.Clicked += BtnAddDev_Clicked;
             btnDeleteDB.Clicked += BtnDeleteDB_Clicked;
-            btnBlockDevice.Clicked += BtnBlockDevice_Clicked;
+            //btnBlockDevice.Clicked += BtnBlockDevice_Clicked;
 
             // DB connection
             conn = DependencyService.Get<Isqlite>().GetConnection();
@@ -69,6 +69,8 @@ namespace doorApp.View
 
             Debug.WriteLine("Delete performed!\n" +
                 "Numer of items in DB: " + listDB.Count);
+
+            blockAllIP();
         }
 
         private async void BtnBlockDevice_Clicked(object sender, EventArgs e)
@@ -160,16 +162,16 @@ namespace doorApp.View
             //    Task.Delay(1000);
             //}
 
-            ////newFrame("123", "321", devices + 1);
+            newFrame("123", "321", devices + 1);
             //devices++;
         }
 
-        //Function to create a new card for the device list.  
+         //Function to create a new card for the device list.  
         //Uses specific inputs rather than an object.
         //Will implement overloaded method using object as parameter
         private void newFrame(string ip, string mac, int device)
         {
-            stackTest.Children.Clear();
+            //stackTest.Children.Clear();
             Frame cardFrame = new Frame
             {
                 BorderColor = Color.Gray,
@@ -199,7 +201,7 @@ namespace doorApp.View
                 }
             };
             stackTest.Children.Add(cardFrame);
-
+            
         }
 
         /// <summary>
@@ -240,7 +242,9 @@ namespace doorApp.View
             // Placing into temp var
             if (listOWRT.Count != 0)
                 tempListOWRT = listOWRT.ToList();
-            
+
+            deviceOWRT.Text = tempDevices;
+
 
         }
 
@@ -478,6 +482,36 @@ namespace doorApp.View
         }
 
 
+        private void blockAllIP()
+        {
+            // This will be currently hard coded for the static domain: 192.168.68.1
+            // It will start with *.*.*.3 and above all the way to *.*.*.255
+            string rejectAllTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg159944";
+            string rejectAllUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg169944";
+            string restartFirewall = "http://192.168.64.2/cgi-bin/luci/command/cfg119944";
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(rejectAllTCP);
+                HttpResponseMessage response1 = client.GetAsync("").Result;
+                response1.EnsureSuccessStatusCode();
+                string result1 = response1.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result1);
+
+                client.BaseAddress = new Uri(rejectAllUDP);
+                HttpResponseMessage response2 = client.GetAsync("").Result;
+                response2.EnsureSuccessStatusCode();
+                string result2 = response2.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result2);
+
+                client.BaseAddress = new Uri(restartFirewall);
+                HttpResponseMessage response3 = client.GetAsync("").Result;
+                response3.EnsureSuccessStatusCode();
+                string result3 = response3.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result3);
+            }
+
+        }
 
 
     }
