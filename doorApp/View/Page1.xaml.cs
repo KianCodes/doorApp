@@ -9,7 +9,6 @@ using System.Timers;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net;
-using System.Data.SqlClient;
 using System.Configuration;
 using SQLite;
 using doorApp.Droid.Model;
@@ -22,7 +21,7 @@ namespace doorApp.View
         int devices = 0;
 
         public SQLiteConnection conn;
-        public Registration regmodel;
+        public Reg regmodel;
 
         private static System.Timers.Timer aTimer;
         private string ipWildcard = "192.168.68.*";
@@ -35,6 +34,8 @@ namespace doorApp.View
         private string[] arrS = new string[255];
         private string[] arrS2 = new string[255];
         public IP_MAC[] arrCopy = new IP_MAC[255];
+        private bool dbZero = true;
+        private bool owrtZero = true;
 
         private int numOWRT = 0;
         List<IP_MAC> listOWRT = new List<IP_MAC>();
@@ -46,10 +47,11 @@ namespace doorApp.View
             InitializeComponent();
             btnAddDev.Clicked += BtnAddDev_Clicked;
             btnDeleteDB.Clicked += BtnDeleteDB_Clicked;
+            //btnBlockDevice.Clicked += BtnBlockDevice_Clicked;
 
             // DB connection
             conn = DependencyService.Get<Isqlite>().GetConnection();
-            conn.CreateTable<Registration>();
+            conn.CreateTable<Reg>();
         }
 
         /// <summary>
@@ -60,31 +62,101 @@ namespace doorApp.View
         private void BtnDeleteDB_Clicked(object sender, EventArgs e)
         {
             // Deleting all table items
-            conn.DeleteAll<Registration>();
+            conn.DeleteAll<Reg>();
+
+
+            dbZero = true;
+
             Debug.WriteLine("Delete performed!\n" +
                 "Numer of items in DB: " + listDB.Count);
+
+            blockAllIP();
         }
+
+        private async void BtnBlockDevice_Clicked(object sender, EventArgs e)
+        {
+            string ip = "192.168.68.100";
+
+            unblockDevice(ip);
+
+            await DisplayAlert("Succes!", "You have unblocked:\n" + ip, "OK");
+
+
+
+
+        }
+
 
         //Button to simulate adding a new card to the device list
         private async void BtnAddDev_Clicked(object sender, EventArgs e)
         {
             string result = "";
-            string tempMAC = "";
-            string tempIP = "";
+            bool inList = false;
 
-            //// Preventing APP to crash
-            //if (tempListOWRT.Count != 0)
-            //{
-            //    tempMAC = tempListOWRT[0].MAC;
-            //    tempIP = tempListOWRT[0].IP;
-            //}
+            if (listDB.Count == 0)
+            {
+                insertDB("NEUTRAL", "0.0.0.0", "00:00:00:00:00:00");
+                dbZero = false;
 
-            //deviceOWRT.Text = tempDevices;
-            //deviceDB.Text = tempDevices2;
+            }
 
-            //Debug.WriteLine(tempMAC);
-            //// Checking if DB is empty
-            //if (listDB.Count == 0 && numOWRT != 0)
+
+            // Preventing APP to crash
+            if (tempListOWRT.Count == 0 && listDB.Count != 0)
+            {
+                scanDB();
+                // Placing devices into their respective labels
+                deviceOWRT.Text = tempDevices;
+                deviceDB.Text = tempDevices2;
+
+                return;
+            }
+            else if (tempListOWRT.Count == 0)
+                return;
+
+            // Scanning DB
+            scanDB();
+
+            Debug.WriteLine("This is the most updated count of DB: " + listDB.Count);
+
+
+            // Checking if DB has a device that contains a MAC address that pertains to the list of devices currently recognized by openWRT
+            // if it doesn't, the user is prompted to either ACCEPT or DENY the device and it's recorded in the DB
+            if (!dbZero)
+            {
+                for (int i = 0; i < tempListOWRT.Count; i++)
+                {
+                    for (int j = 0; j < listDB.Count; j++)
+                    {
+                        if (tempListOWRT[i].MAC == listDB[j].macAddr)
+                        {
+                            inList = true;
+                        }
+                    }
+
+                    // If the device was not found in the DB it is added
+                    if (!inList)
+                    {
+                        result = await DisplayActionSheet("New device connected:\n" +
+                        tempListOWRT[i].MAC, "Ignore", null, "ACCEPT", "DENY");
+
+                        Debug.WriteLine("Insert: " + tempListOWRT[i].IP + " " + tempListOWRT[i].MAC);
+                        if (result != "Ignore")
+                            insertDB(result, tempListOWRT[i].IP, tempListOWRT[i].MAC);
+                    }
+                    inList = false;
+                }
+            }
+
+            // Scanning DB
+            scanDB();
+
+
+            // Placing devices into their respective labels
+            deviceOWRT.Text = tempDevices;
+            deviceDB.Text = tempDevices2;
+
+            //for (int i = 0; i < numDevices; i++)
             //{
             //    result = await DisplayActionSheet("New device connected:\n" +
             //        tempMAC, "Ignore", null, "ACCEPT", "DENY");
@@ -97,7 +169,7 @@ namespace doorApp.View
 
         }
 
-        //Function to create a new card for the device list.  
+         //Function to create a new card for the device list.  
         //Uses specific inputs rather than an object.
         //Will implement overloaded method using object as parameter
         private void newFrame(string ip, string mac, int device)
@@ -140,22 +212,43 @@ namespace doorApp.View
         /// </summary>
         /// <param name="source"></param>
         /// <param name="e"></param>
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        private void OnTimedEvent_1(Object source, ElapsedEventArgs e)
         {
-            // Scanning oWRT with nmap to obtain list of devices
-            scanOWRT();
 
             // Scanning DB with current devices
             scanDB();
 
             // Debugging
-            Debug.WriteLine("Number of items in listOWRT: " + listOWRT.Count);
             Debug.WriteLine("Number of items in listDB: " + listDB.Count);
+            Debug.WriteLine("Number of items in listOWRT: " + tempListOWRT.Count);
 
-            // Clearing listOWRT for it to scan the system again
-            numOWRT = listOWRT.Count;
-            tempListOWRT = listOWRT;
-            //listOWRT.Clear();
+        }
+
+        /// <summary>
+        /// Used to constantly scan the devices and compare them to the list of devices located on our DB
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnTimedEvent_2(Object source, ElapsedEventArgs e)
+        {
+
+            // Scanning oWRT with nmap to obtain list of devices
+            scanOWRT();
+
+            // Scanning DB with current devices
+            //scanDB();
+
+            // Debugging
+            Debug.WriteLine("Number of items in listOWRT: " + tempListOWRT.Count);
+            //Debug.WriteLine("Number of items in listDB: " + listDB.Count);
+
+            // Placing into temp var
+            if (listOWRT.Count != 0)
+                tempListOWRT = listOWRT.ToList();
+
+            deviceOWRT.Text = tempDevices;
+
+
         }
 
         T[] InitializeArray<T>(int length) where T : new()
@@ -169,13 +262,21 @@ namespace doorApp.View
             return array;
         }
 
-
-        private void setTimer()
+        private void setTimer_1_DB()
+        {
+            // Create a timer with a two second interval.
+            aTimer = new System.Timers.Timer(500);
+            // Hook up the Elapsed event for the timer. 
+            aTimer.Elapsed += OnTimedEvent_1;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
+        }
+        private void setTimer_2_oWRT()
         {
             // Create a timer with a two second interval.
             aTimer = new System.Timers.Timer(6000);
             // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += OnTimedEvent;
+            aTimer.Elapsed += OnTimedEvent_2;
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
         }
@@ -188,7 +289,8 @@ namespace doorApp.View
 
         protected override void OnAppearing()
         {
-            setTimer();
+            setTimer_1_DB();
+            setTimer_2_oWRT();
             Debug.WriteLine("This is where it happens!");
         }
 
@@ -202,18 +304,19 @@ namespace doorApp.View
         private void scanDB()
         {
             // Getting back the info from table
-            //Debug.WriteLine("This is the count of devices stored: " + conn.Table<Registration>().Count());
-            listDB = conn.Table<Registration>().ToList();
+            //Debug.WriteLine("This is the count of devices stored: " + conn.Table<Reg>().Count());
+            listDB = conn.Table<Reg>().ToList();
             Debug.WriteLine(listDB.Count);
 
             //Debug.WriteLine(listDB[0].ipAddr.ToString());
 
             for (int j = 0; j < listDB.Count; j++)
             {
-                arrS2[j] = "Device # " + listDB[j].id + "\n" +
-                    listDB[j].ipAddr + "\n" +
-                    listDB[j].macAddr + "\n" +
-                    listDB[j].status;
+                if (listDB[j].status != "NEUTRAL")
+                    arrS2[j] = "Device # " + listDB[j].id + "\n" +
+                        listDB[j].ipAddr + "\n" +
+                        listDB[j].macAddr + "\n" +
+                        listDB[j].status;
 
 
             }
@@ -223,15 +326,49 @@ namespace doorApp.View
             Array.Clear(arrS2, 0, arrS2.Length);
         }
 
+        private void unblockDevice(string IP)
+        {
+
+            string unrejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
+            string unrejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
+            string unrejectTCPend = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+            string unrejectUDPend = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(unrejectTCP + IP + unrejectTCPend);
+                HttpResponseMessage response2 = client.GetAsync("").Result;
+                response2.EnsureSuccessStatusCode();
+                string result2 = response2.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result2);
+
+                client.BaseAddress = new Uri(unrejectUDP + IP + unrejectUDPend);
+                HttpResponseMessage response3 = client.GetAsync("").Result;
+                response3.EnsureSuccessStatusCode();
+                string result3 = response3.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result3);
+            }
+        }
+
+
         private void insertDB(string status, string IP, string MAC)
         {
-            string rejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg0f9944";
-            string rejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg109944";
+            string rejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg0f9944/";
+            string rejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg109944/";
             string rejectTCPend = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
             string rejectUDPend = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+            string restartFirewall = "http://192.168.64.2/cgi-bin/luci/command/cfg119944";
 
-            Registration reg = new Registration();
-            if (status == "ACCEPT")
+
+            Reg reg = new Reg();
+            if (status == "NEUTRAL")
+            {
+                reg.ipAddr = IP;
+                reg.macAddr = MAC;
+                reg.status = status;
+                reg.nickname = "Device " + reg.id;
+            }
+            else if (status == "ACCEPT")
             {
                 reg.ipAddr = IP;
                 reg.macAddr = MAC;
@@ -247,17 +384,23 @@ namespace doorApp.View
 
                 using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
                 {
-                    client.BaseAddress = new Uri(rejectTCP + "/%20" + IP + rejectTCPend);
+                    client.BaseAddress = new Uri(rejectTCP + IP + rejectTCPend);
                     HttpResponseMessage response2 = client.GetAsync("").Result;
                     response2.EnsureSuccessStatusCode();
                     string result2 = response2.Content.ReadAsStringAsync().Result;
                     Console.WriteLine("Result: " + result2);
 
-                    client.BaseAddress = new Uri(rejectUDP + "/%20" + IP + rejectUDPend);
+                    client.BaseAddress = new Uri(rejectUDP + IP + rejectUDPend);
                     HttpResponseMessage response3 = client.GetAsync("").Result;
                     response3.EnsureSuccessStatusCode();
                     string result3 = response3.Content.ReadAsStringAsync().Result;
                     Console.WriteLine("Result: " + result3);
+
+                    client.BaseAddress = new Uri(restartFirewall);
+                    HttpResponseMessage response4 = client.GetAsync("").Result;
+                    response4.EnsureSuccessStatusCode();
+                    string result4 = response3.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine("Result: " + result4);
                 }
             }
             int x = 0;
@@ -271,18 +414,18 @@ namespace doorApp.View
             }
 
 
-            if (x == 1)
-            {
-                DisplayAlert("Registration", "Successful", "Ok");
-            }
-            else
-            {
-                DisplayAlert("Registration", "Failed", "Ok");
-            }
+            //if (x == 1)
+            //{
+            //    DisplayAlert("Reg", "Successful", "Ok");
+            //}
+            //else
+            //{
+            //    DisplayAlert("Reg", "Failed", "Ok");
+            //}
 
-            
-            
-            //var details = (from y in conn.Table<Registration>() select y).ToList();
+
+
+            //var details = (from y in conn.Table<Reg>() select y).ToList();
             //myDevice.Text = String.Join(", ", details.ToArray());
         }
 
@@ -305,8 +448,9 @@ namespace doorApp.View
                 string result = response.Content.ReadAsStringAsync().Result;
                 Console.WriteLine("Result: " + result);
 
-                tempListOWRT = listOWRT;
+
                 listOWRT.Clear();
+                // Adding devices obtained from NMAP scan to openWRT to listOWRT LIST (IP and MAC)
                 while (i != -1)
                 {
 
@@ -318,13 +462,14 @@ namespace doorApp.View
                     i = result.IndexOf("MAC Address:", i);
                     //listOWRT[temp].MAC = result.Substring(i + 13, result.IndexOf(" ", i + 14) - (i + 13));
 
-                    listOWRT.Add(new IP_MAC { IP = use, MAC = result.Substring(i + 13, result.IndexOf(" ", i + 14) - (i + 13)) }) ;
+                    listOWRT.Add(new IP_MAC { IP = use, MAC = result.Substring(i + 13, result.IndexOf(" ", i + 14) - (i + 13)) });
                     temp++;
                 }
                 temp = 0;
-                Debug.WriteLine("This is the first IP: "  + listOWRT[0].IP);
+                Debug.WriteLine("This is the first IP: " + listOWRT[0].IP);
                 Debug.WriteLine("This is the first MAC: " + listOWRT[0].MAC);
-                for(int j = 0; j < listOWRT.Count; j++)
+
+                for (int j = 0; j < listOWRT.Count; j++)
                 {
                     arrS[j] = "Device # " + (j + 1) + "\n" +
                         listOWRT[j].IP + "\n" +
@@ -335,10 +480,41 @@ namespace doorApp.View
 
                 // Clearing string array
                 Array.Clear(arrS, 0, arrS.Length);
+
             }
-            //arrCopy = arr;
         }
-        
+
+
+        private void blockAllIP()
+        {
+            // This will be currently hard coded for the static domain: 192.168.68.1
+            // It will start with *.*.*.3 and above all the way to *.*.*.255
+            string rejectAllTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg159944";
+            string rejectAllUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg169944";
+            string restartFirewall = "http://192.168.64.2/cgi-bin/luci/command/cfg119944";
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(rejectAllTCP);
+                HttpResponseMessage response1 = client.GetAsync("").Result;
+                response1.EnsureSuccessStatusCode();
+                string result1 = response1.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result1);
+
+                client.BaseAddress = new Uri(rejectAllUDP);
+                HttpResponseMessage response2 = client.GetAsync("").Result;
+                response2.EnsureSuccessStatusCode();
+                string result2 = response2.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result2);
+
+                client.BaseAddress = new Uri(restartFirewall);
+                HttpResponseMessage response3 = client.GetAsync("").Result;
+                response3.EnsureSuccessStatusCode();
+                string result3 = response3.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result3);
+            }
+
+        }
 
 
     }

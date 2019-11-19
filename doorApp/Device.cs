@@ -8,7 +8,7 @@ using SQLite;
 
 namespace doorApp.Droid.Model
 {
-    public class Registration
+    public class Reg
     {
         [PrimaryKey, AutoIncrement]
         public int id { get; set; }

@@ -45,13 +45,13 @@
                 <Button
                     Grid.Column="4" Grid.Row="1"
                     BackgroundColor= "Red"
-                    Text="Delete devices DB" 
+                    Text="Block/Remove ALL" 
                     TextColor="White"
                     x:Name="btnDeleteDB"
                 />
 
             </Grid>
-            
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
