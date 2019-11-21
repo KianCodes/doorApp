@@ -40,7 +40,7 @@ namespace doorApp.View
         private int numOWRT = 0;
         List<IP_MAC> listOWRT = new List<IP_MAC>();
         List<IP_MAC> tempListOWRT = new List<IP_MAC>();
-        List<Registration> listDB = new List<Registration>();
+        //List<Registration> listDB = new List<Registration>();
 
         public OldDeviceList()
         {
@@ -61,16 +61,16 @@ namespace doorApp.View
         /// <param name="e"></param>
         private void BtnDeleteDB_Clicked(object sender, EventArgs e)
         {
-            // Deleting all table items
-            conn.DeleteAll<Reg>();
+            //// Deleting all table items
+            //conn.DeleteAll<Reg>();
 
 
-            dbZero = true;
+            //dbZero = true;
 
-            Debug.WriteLine("Delete performed!\n" +
-                "Numer of items in DB: " + listDB.Count);
+            //Debug.WriteLine("Delete performed!\n" +
+            //    "Numer of items in DB: " + listDB.Count);
 
-            blockAllIP();
+            //blockAllIP();
         }
 
         private async void BtnBlockDevice_Clicked(object sender, EventArgs e)
@@ -90,80 +90,80 @@ namespace doorApp.View
         //Button to simulate adding a new card to the device list
         private async void BtnAddDev_Clicked(object sender, EventArgs e)
         {
-            string result = "";
-            bool inList = false;
+            //string result = "";
+            //bool inList = false;
 
-            if (listDB.Count == 0)
-            {
-                insertDB("NEUTRAL", "0.0.0.0", "00:00:00:00:00:00");
-                dbZero = false;
-
-            }
-
-
-            // Preventing APP to crash
-            if (tempListOWRT.Count == 0 && listDB.Count != 0)
-            {
-                scanDB();
-                // Placing devices into their respective labels
-                deviceOWRT.Text = tempDevices;
-                deviceDB.Text = tempDevices2;
-
-                return;
-            }
-            else if (tempListOWRT.Count == 0)
-                return;
-
-            // Scanning DB
-            scanDB();
-
-            Debug.WriteLine("This is the most updated count of DB: " + listDB.Count);
-
-
-            // Checking if DB has a device that contains a MAC address that pertains to the list of devices currently recognized by openWRT
-            // if it doesn't, the user is prompted to either ACCEPT or DENY the device and it's recorded in the DB
-            if (!dbZero)
-            {
-                for (int i = 0; i < tempListOWRT.Count; i++)
-                {
-                    for (int j = 0; j < listDB.Count; j++)
-                    {
-                        if (tempListOWRT[i].MAC == listDB[j].macAddr)
-                        {
-                            inList = true;
-                        }
-                    }
-
-                    // If the device was not found in the DB it is added
-                    if (!inList)
-                    {
-                        result = await DisplayActionSheet("New device connected:\n" +
-                        tempListOWRT[i].MAC, "Ignore", null, "ACCEPT", "DENY");
-
-                        Debug.WriteLine("Insert: " + tempListOWRT[i].IP + " " + tempListOWRT[i].MAC);
-                        if (result != "Ignore")
-                            insertDB(result, tempListOWRT[i].IP, tempListOWRT[i].MAC);
-                    }
-                    inList = false;
-                }
-            }
-
-            // Scanning DB
-            scanDB();
-
-
-            // Placing devices into their respective labels
-            deviceOWRT.Text = tempDevices;
-            deviceDB.Text = tempDevices2;
-
-            //for (int i = 0; i < numDevices; i++)
+            //if (listDB.Count == 0)
             //{
-            //    result = await DisplayActionSheet("New device connected:\n" +
-            //        tempMAC, "Ignore", null, "ACCEPT", "DENY");
+            //    insertDB("NEUTRAL", "0.0.0.0", "00:00:00:00:00:00");
+            //    dbZero = false;
 
-            //    // INSERTING device into DB with the appropriate status
-            //    insertDB(result, tempMAC, tempIP);
             //}
+
+
+            //// Preventing APP to crash
+            //if (tempListOWRT.Count == 0 && listDB.Count != 0)
+            //{
+            //    scanDB();
+            //    // Placing devices into their respective labels
+            //    deviceOWRT.Text = tempDevices;
+            //    deviceDB.Text = tempDevices2;
+
+            //    return;
+            //}
+            //else if (tempListOWRT.Count == 0)
+            //    return;
+
+            //// Scanning DB
+            //scanDB();
+
+            //Debug.WriteLine("This is the most updated count of DB: " + listDB.Count);
+
+
+            //// Checking if DB has a device that contains a MAC address that pertains to the list of devices currently recognized by openWRT
+            //// if it doesn't, the user is prompted to either ACCEPT or DENY the device and it's recorded in the DB
+            //if (!dbZero)
+            //{
+            //    for (int i = 0; i < tempListOWRT.Count; i++)
+            //    {
+            //        for (int j = 0; j < listDB.Count; j++)
+            //        {
+            //            if (tempListOWRT[i].MAC == listDB[j].macAddr)
+            //            {
+            //                inList = true;
+            //            }
+            //        }
+
+            //        // If the device was not found in the DB it is added
+            //        if (!inList)
+            //        {
+            //            result = await DisplayActionSheet("New device connected:\n" +
+            //            tempListOWRT[i].MAC, "Ignore", null, "ACCEPT", "DENY");
+
+            //            Debug.WriteLine("Insert: " + tempListOWRT[i].IP + " " + tempListOWRT[i].MAC);
+            //            if (result != "Ignore")
+            //                insertDB(result, tempListOWRT[i].IP, tempListOWRT[i].MAC);
+            //        }
+            //        inList = false;
+            //    }
+            //}
+
+            //// Scanning DB
+            //scanDB();
+
+
+            //// Placing devices into their respective labels
+            //deviceOWRT.Text = tempDevices;
+            //deviceDB.Text = tempDevices2;
+
+            ////for (int i = 0; i < numDevices; i++)
+            ////{
+            ////    result = await DisplayActionSheet("New device connected:\n" +
+            ////        tempMAC, "Ignore", null, "ACCEPT", "DENY");
+
+            ////    // INSERTING device into DB with the appropriate status
+            ////    insertDB(result, tempMAC, tempIP);
+            ////}
             newFrame("123", "321", devices + 1);
             devices++;
 
@@ -215,12 +215,12 @@ namespace doorApp.View
         private void OnTimedEvent_1(Object source, ElapsedEventArgs e)
         {
 
-            // Scanning DB with current devices
-            scanDB();
+            //// Scanning DB with current devices
+            //scanDB();
 
-            // Debugging
-            Debug.WriteLine("Number of items in listDB: " + listDB.Count);
-            Debug.WriteLine("Number of items in listOWRT: " + tempListOWRT.Count);
+            //// Debugging
+            //Debug.WriteLine("Number of items in listDB: " + listDB.Count);
+            //Debug.WriteLine("Number of items in listOWRT: " + tempListOWRT.Count);
 
         }
 
@@ -303,27 +303,27 @@ namespace doorApp.View
 
         private void scanDB()
         {
-            // Getting back the info from table
-            //Debug.WriteLine("This is the count of devices stored: " + conn.Table<Reg>().Count());
-            listDB = conn.Table<Reg>().ToList();
-            Debug.WriteLine(listDB.Count);
+            //// Getting back the info from table
+            ////Debug.WriteLine("This is the count of devices stored: " + conn.Table<Reg>().Count());
+            //listDB = conn.Table<Reg>().ToList();
+            //Debug.WriteLine(listDB.Count);
 
-            //Debug.WriteLine(listDB[0].ipAddr.ToString());
+            ////Debug.WriteLine(listDB[0].ipAddr.ToString());
 
-            for (int j = 0; j < listDB.Count; j++)
-            {
-                if (listDB[j].status != "NEUTRAL")
-                    arrS2[j] = "Device # " + listDB[j].id + "\n" +
-                        listDB[j].ipAddr + "\n" +
-                        listDB[j].macAddr + "\n" +
-                        listDB[j].status;
+            //for (int j = 0; j < listDB.Count; j++)
+            //{
+            //    if (listDB[j].status != "NEUTRAL")
+            //        arrS2[j] = "Device # " + listDB[j].id + "\n" +
+            //            listDB[j].ipAddr + "\n" +
+            //            listDB[j].macAddr + "\n" +
+            //            listDB[j].status;
 
 
-            }
-            tempDevices2 = "DB devices: \n" + string.Join("\n\n", arrS2.Where(s => !string.IsNullOrEmpty(s)));
+            //}
+            //tempDevices2 = "DB devices: \n" + string.Join("\n\n", arrS2.Where(s => !string.IsNullOrEmpty(s)));
 
-            // Clearing string array
-            Array.Clear(arrS2, 0, arrS2.Length);
+            //// Clearing string array
+            //Array.Clear(arrS2, 0, arrS2.Length);
         }
 
         private void unblockDevice(string IP)
