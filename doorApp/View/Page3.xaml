@@ -49,53 +49,74 @@
                 <RowDefinition Height="75" />
                 <RowDefinition Height="200" />
             </Grid.RowDefinitions>
-            <CheckBox HorizontalOptions="End"/>
+            <CheckBox HorizontalOptions="End"
+                      ScaleX="1.5"
+                      ScaleY="1.5"/>
             <Label Grid.Column="1"
-                Text="Monday"
+                    Text="Monday"
+                   FontSize="Medium"
                    VerticalOptions="Center"/>
 
             <CheckBox Grid.Row="1"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
                   HorizontalOptions="End" />
             <Label Grid.Row="1"
                Grid.Column="1"
                Text="Tuesday"
+                    FontSize="Medium"
                    VerticalOptions="Center"
                />
             <CheckBox Grid.Row="2"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
                   HorizontalOptions="End"/>
             <Label Grid.Row="2"
                Grid.Column="1"
                Text="Wednesday"
+                    FontSize="Medium"
                    VerticalOptions="Center"
                 />
 
             <CheckBox Grid.Row="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
                    HorizontalOptions="End"/>
             <Label Grid.Row="3"
                Grid.Column="1"
                Text="Thursday"
+                    FontSize="Medium"
                    VerticalOptions="Center"
                />
 
-            <CheckBox Grid.Column="3"/>
+            <CheckBox Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"/>
             <Label Grid.Column="4"
+                    FontSize="Medium"
                    VerticalOptions="Center"
                Text="Friday"/>
 
             <CheckBox Grid.Row="1"
                   Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
                   />
             <Label Grid.Column="4"
                Grid.Row="1"
+                    FontSize="Medium"
                    VerticalOptions="Center"
                Text="Saturday"
                 />
 
             <CheckBox Grid.Row="2"
                   Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
                    />
             <Label Grid.Column="4"
                Grid.Row="2"
+                    FontSize="Medium"
                VerticalOptions="Center"
                Text="Sunday"
                 />
