@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="App.config" />
+    <None Remove="View\Page1.xaml.cs~RF94c3f.TMP" />
   </ItemGroup>
 
   <ItemGroup>

@@ -22,8 +22,14 @@ namespace doorApp.View
 
         public MainPage()
         {
+
             fingerprint();
+
+
             this.BindingContext = new MainPageViewModel(this.Navigation);
+
+            
+
         }
 
 
@@ -37,7 +43,11 @@ namespace doorApp.View
             {
                 var auth = await CrossFingerprint.Current.AuthenticateAsync("Authenticate");
                 if (auth.Authenticated)
+                {
                     InitializeComponent();
+                    // Declaring button(s)
+                    btnReboot.Clicked += BtnReboot_Clicked;
+                }
                 else
                 {
                     await DisplayAlert("Failed", "Fingerprint authentication failed, app is closing.", "OK");
@@ -47,6 +57,32 @@ namespace doorApp.View
             }
         }
 
+        private async void BtnReboot_Clicked(object sender, EventArgs e)
+        {
+            bool answer = await DisplayAlert("Reboot", "Are you sure you wish to reboot the router?", "Yes", "No");
+            if (answer)
+            {
+                // Calling fx that'll reboot the router
+                rebootRouter();
+            }
+            
+        }
 
+        private async void rebootRouter()
+        {
+            // This will be currently hard coded for the static domain: 192.168.68.1
+            // It will start with *.*.*.3 and above all the way to *.*.*.255
+            string reboot = "http://192.168.64.2/cgi-bin/luci/command/cfg1b9944";
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(reboot);
+                HttpResponseMessage response1 = client.GetAsync("").Result;
+                response1.EnsureSuccessStatusCode();
+                string result1 = response1.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result1);
+            }
+
+        }
     }
 }

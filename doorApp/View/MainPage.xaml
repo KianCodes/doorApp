@@ -6,21 +6,21 @@
     <StackLayout>
         <Button
                     BackgroundColor="Bisque"
-                    Text="Device List" 
+                    Text="Devices" 
                     TextColor="Black"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page1}"
                     />
         <Button 
                     BackgroundColor="BurlyWood"
-                    Text="New Page" 
+                    Text="Time based op" 
                     TextColor="Black"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page2}"
                     />
         <Button 
                     BackgroundColor="DarkSlateBlue"
-                    Text="Other New Page"
+                    Text="Restart router"
                     TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page3}"
+                    x:Name="btnReboot"
                     />
     </StackLayout>
 </ContentPage> 

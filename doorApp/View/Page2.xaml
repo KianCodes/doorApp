@@ -4,12 +4,183 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             Title="Timed Settings"
              x:Class="doorApp.View.Page2">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+    <ContentPage.Resources>
+        <Style TargetType="CheckBox">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Color"
+                                        Value="Red" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="IsChecked">
+                            <VisualState.Setters>
+                                <Setter Property="Color"
+                                        Value="Green" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+    <StackLayout>
+
+        <Grid Margin="20,20,20,20"
+          Padding="10,10,10,10"
+          ColumnSpacing="3"
+          >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".6*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="75" />
+                <RowDefinition Height="75" />
+                <RowDefinition Height="200" />
+            </Grid.RowDefinitions>
+            <CheckBox x:Name="cMonday"
+                HorizontalOptions="End"
+                      ScaleX="1.5"
+                      ScaleY="1.5"/>
+            <Label Grid.Column="1"
+                    Text="Monday"
+                   FontSize="Medium"
+                   VerticalOptions="Center"/>
+
+            <CheckBox x:Name="cTuesday" 
+                Grid.Row="1"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
+                  HorizontalOptions="End" />
+            <Label Grid.Row="1"
+               Grid.Column="1"
+               Text="Tuesday"
+                    FontSize="Medium"
+                   VerticalOptions="Center"
+               />
+            <CheckBox x:Name="cWednesday" 
+                Grid.Row="2"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
+                  HorizontalOptions="End"/>
+            <Label Grid.Row="2"
+               Grid.Column="1"
+               Text="Wednesday"
+                    FontSize="Medium"
+                   VerticalOptions="Center"
+                />
+
+            <CheckBox x:Name="cThursday"
+                Grid.Row="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
+                   HorizontalOptions="End"/>
+            <Label Grid.Row="3"
+               Grid.Column="1"
+               Text="Thursday"
+                    FontSize="Medium"
+                   VerticalOptions="Center"
+               />
+
+            <CheckBox x:Name="cFriday" 
+                Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"/>
+            <Label Grid.Column="4"
+                    FontSize="Medium"
+                   VerticalOptions="Center"
+               Text="Friday"/>
+
+            <CheckBox x:Name="cSaturday" 
+                Grid.Row="1"
+                  Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
+                  />
+            <Label Grid.Column="4"
+               Grid.Row="1"
+                    FontSize="Medium"
+                   VerticalOptions="Center"
+               Text="Saturday"
+                />
+
+            <CheckBox x:Name="cSunday"
+                Grid.Row="2"
+                  Grid.Column="3"
+                      ScaleX="1.5"
+                      ScaleY="1.5"
+                   />
+            <Label Grid.Column="4"
+               Grid.Row="2"
+                    FontSize="Medium"
+               VerticalOptions="Center"
+               Text="Sunday"
+                />
+
+
+            <Label Grid.Row="4"
+                   Grid.Column="1"
+                   HorizontalOptions="StartAndExpand"
+                   VerticalOptions="Center"
+                   FontSize="Medium"
+                   LineHeight="20"
+                    Text="Start Time" />
+            <TimePicker x:Name="timeStartPicker"
+                    Time="08:00:00"
+                    Format="T"
+                    HorizontalOptions="StartAndExpand"
+                        Grid.Row="4"
+                        Grid.Column="3"
+                        Grid.ColumnSpan="2"
+                    />
+            <Label Grid.Row="5"
+                   Grid.Column="1"
+                   HorizontalOptions="StartAndExpand"
+                   VerticalOptions="Center"
+                   FontSize="Medium"
+                   LineHeight="20"
+                    Text="End Time" />
+            <TimePicker x:Name="timeEndPicker"
+                    Time="20:00:00"
+                    Format="T"
+                    HorizontalOptions="StartAndExpand"
+                        Grid.Row="5"
+                        Grid.Column="3"
+                        Grid.ColumnSpan="2"
+                    />
+
+            <Button x:Name="btnActivate"
+                Grid.Row ="6"
+                    VerticalOptions="Center"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Text="Activate"
+                    TextColor="White"
+                    BackgroundColor="Green" 
+                    ></Button>
+            <Button x:Name="btnDeactivate" 
+                Grid.Row ="6"
+                    VerticalOptions="Center"
+                    Grid.Column="3"
+                    Grid.ColumnSpan="2"
+                    Text="Deactivate"
+                    TextColor="White"
+                    BackgroundColor="Red"
+                    ></Button>
+        </Grid>
+
+
+    </StackLayout>
+
 </ContentPage>

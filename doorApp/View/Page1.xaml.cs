@@ -12,6 +12,9 @@ using System.Net;
 using System.Configuration;
 using SQLite;
 using doorApp.Droid.Model;
+using System.Threading;
+using System.ComponentModel;
+using Xamarin.Forms.Internals;
 
 namespace doorApp.View
 {
@@ -45,10 +48,11 @@ namespace doorApp.View
         public Page1()
         {
             InitializeComponent();
-            btnAddDev.Clicked += BtnAddDev_Clicked;
-            btnDeleteDB.Clicked += BtnDeleteDB_Clicked;
-            //btnBlockDevice.Clicked += BtnBlockDevice_Clicked;
-
+            btnRefresh.Clicked += BtnRefresh_Clicked;
+            btnBlockAll.Clicked += BtnBlockAll_Clicked;
+            btnReset.Clicked += BtnReset_Clicked;
+            //btnDeleteAll.Clicked += BtnDeleteAll_Clicked;
+            
             // DB connection
             conn = DependencyService.Get<Isqlite>().GetConnection();
             conn.CreateTable<Reg>();
@@ -59,38 +63,72 @@ namespace doorApp.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BtnDeleteDB_Clicked(object sender, EventArgs e)
+        private void BtnBlockAll_Clicked(object sender, EventArgs e)
         {
+            blockAllIP();
+
+            // Updating DB devices with "DENY" status
+            var tp = conn.Query<Reg>("SELECT * FROM Reg");
+
+            if (tp != null)
+                conn.RunInTransaction(() =>
+                {
+                    SQLiteCommand cmd = conn.CreateCommand("UPDATE Reg SET status = 'DENY' WHERE status = 'ACCEPT'");
+                    cmd.ExecuteNonQuery();
+                });
+
+                // Update Database
+                //conn.Update(tp);
+
+            //// Updating "Status" of each IP
+            //for (int i = 0; i < listDB.Count; i++)
+            //    if (listDB[i].ipAddr != "0.0.0.0")
+            //        listDB[i].status = "DENY";
+
+            scanDB();
+
+            // Clearing cards and adding them again
+            stackTest.Children.Clear();
+
+            for(int i = 0; i < listDB.Count; i++)
+            {
+                if(listDB[i].ipAddr != "0.0.0.0")
+                    newFrame(listDB[i].ipAddr, listDB[i].macAddr, "Device " + (stackTest.Children.Count + 1).ToString(), listDB[i].status);
+            }
+
+
+
+            //deviceDB.Text = tempDevices2;
+
+        }
+
+        private void BtnReset_Clicked(object sender, EventArgs e)
+        {
+            unblockAllIP();
+            removeException();
+
             // Deleting all table items
             conn.DeleteAll<Reg>();
-
 
             dbZero = true;
 
             Debug.WriteLine("Delete performed!\n" +
                 "Numer of items in DB: " + listDB.Count);
 
-            blockAllIP();
+            deviceOWRT.Text = "";
+            deviceDB.Text = "";
+
+            // Resetting cards
+            //for (int i = 0; i < stackTest.Children.Count; i++)
+                stackTest.Children.Clear();
         }
-
-        private async void BtnBlockDevice_Clicked(object sender, EventArgs e)
-        {
-            string ip = "192.168.68.100";
-
-            unblockDevice(ip);
-
-            await DisplayAlert("Succes!", "You have unblocked:\n" + ip, "OK");
-
-
-
-
-        }
-
 
         //Button to simulate adding a new card to the device list
-        private async void BtnAddDev_Clicked(object sender, EventArgs e)
+        private async void BtnRefresh_Clicked(object sender, EventArgs e)
         {
             string result = "";
+            
+
             bool inList = false;
 
             if (listDB.Count == 0)
@@ -106,8 +144,8 @@ namespace doorApp.View
             {
                 scanDB();
                 // Placing devices into their respective labels
-                deviceOWRT.Text = tempDevices;
-                deviceDB.Text = tempDevices2;
+                //deviceOWRT.Text = tempDevices;
+                //deviceDB.Text = tempDevices2;
 
                 return;
             }
@@ -119,6 +157,7 @@ namespace doorApp.View
 
             Debug.WriteLine("This is the most updated count of DB: " + listDB.Count);
 
+            
 
             // Checking if DB has a device that contains a MAC address that pertains to the list of devices currently recognized by openWRT
             // if it doesn't, the user is prompted to either ACCEPT or DENY the device and it's recorded in the DB
@@ -142,19 +181,24 @@ namespace doorApp.View
 
                         Debug.WriteLine("Insert: " + tempListOWRT[i].IP + " " + tempListOWRT[i].MAC);
                         if (result != "Ignore")
+                        {
                             insertDB(result, tempListOWRT[i].IP, tempListOWRT[i].MAC);
+                            newFrame(tempListOWRT[i].IP, tempListOWRT[i].MAC, "Device " + (stackTest.Children.Count+1).ToString(), result);
+                            ///break;
+                        }
                     }
                     inList = false;
                 }
             }
+
 
             // Scanning DB
             scanDB();
 
 
             // Placing devices into their respective labels
-            deviceOWRT.Text = tempDevices;
-            deviceDB.Text = tempDevices2;
+            //deviceOWRT.Text = tempDevices;
+            //deviceDB.Text = tempDevices2;
 
             //for (int i = 0; i < numDevices; i++)
             //{
@@ -162,14 +206,13 @@ namespace doorApp.View
             //    Task.Delay(1000);
             //}
 
-            newFrame("123", "321", devices + 1);
-            //devices++;
+
         }
 
          //Function to create a new card for the device list.  
         //Uses specific inputs rather than an object.
         //Will implement overloaded method using object as parameter
-        private void newFrame(string ip, string mac, int device)
+        private void newFrame(string ip, string mac, string device, string status)
         {
             //stackTest.Children.Clear();
             Frame cardFrame = new Frame
@@ -183,7 +226,7 @@ namespace doorApp.View
                     {
                         new Label
                         {
-                            Text = $"Device {device}",
+                            Text = device,
                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                             FontAttributes = FontAttributes.Bold
                         },
@@ -195,12 +238,13 @@ namespace doorApp.View
                         },
                         new Label
                         {
-                            Text = $"IP Address: {ip}\nMAC Address: {mac}"
+                            Text = $"IP Address: {ip}\nMAC Address: {mac}\nStatus: {status}"
                         }
                     }
                 }
             };
             stackTest.Children.Add(cardFrame);
+            
             
         }
 
@@ -243,7 +287,7 @@ namespace doorApp.View
             if (listOWRT.Count != 0)
                 tempListOWRT = listOWRT.ToList();
 
-            deviceOWRT.Text = tempDevices;
+            //deviceOWRT.Text = tempDevices;
 
 
         }
@@ -262,7 +306,7 @@ namespace doorApp.View
         private void setTimer_1_DB()
         {
             // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(500);
+            aTimer = new System.Timers.Timer(5000);
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += OnTimedEvent_1;
             aTimer.AutoReset = true;
@@ -271,7 +315,7 @@ namespace doorApp.View
         private void setTimer_2_oWRT()
         {
             // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(6000);
+            aTimer = new System.Timers.Timer(2500);
             // Hook up the Elapsed event for the timer. 
             aTimer.Elapsed += OnTimedEvent_2;
             aTimer.AutoReset = true;
@@ -323,39 +367,54 @@ namespace doorApp.View
             Array.Clear(arrS2, 0, arrS2.Length);
         }
 
-        private void unblockDevice(string IP)
+
+        private void removeException()
         {
+            string exception = "http://192.168.64.2/cgi-bin/luci/command/cfg1a9944/";
+            string removeTCP = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Allow101%22%20-j%20ACCEPT";
+            string removeUDP = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Allow101%22%20-j%20ACCEPT";
 
             string unrejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
             string unrejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
             string unrejectTCPend = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
             string unrejectUDPend = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
 
-            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
-            {
-                client.BaseAddress = new Uri(unrejectTCP + IP + unrejectTCPend);
-                HttpResponseMessage response2 = client.GetAsync("").Result;
-                response2.EnsureSuccessStatusCode();
-                string result2 = response2.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Result: " + result2);
 
-                client.BaseAddress = new Uri(unrejectUDP + IP + unrejectUDPend);
-                HttpResponseMessage response3 = client.GetAsync("").Result;
-                response3.EnsureSuccessStatusCode();
-                string result3 = response3.Content.ReadAsStringAsync().Result;
-                Console.WriteLine("Result: " + result3);
+            for (int i = 0; i < listDB.Count; i++)
+            {
+
+                if(listDB[i].ipAddr != "0.0.0.0")
+                    using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                    {
+                        client.BaseAddress = new Uri(exception + listDB[i].ipAddr + removeTCP);
+                        HttpResponseMessage response2 = client.GetAsync("").Result;
+                        //response2.EnsureSuccessStatusCode();
+                        string result2 = response2.Content.ReadAsStringAsync().Result;
+                        Console.WriteLine("Result: " + result2);
+
+                        client.BaseAddress = new Uri(exception + listDB[i].ipAddr + removeUDP);
+                        HttpResponseMessage response3 = client.GetAsync("").Result;
+                        //response3.EnsureSuccessStatusCode();
+                        string result3 = response3.Content.ReadAsStringAsync().Result;
+                        Console.WriteLine("Result: " + result3);
+                    }
             }
         }
 
 
         private void insertDB(string status, string IP, string MAC)
         {
-            string rejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg0f9944/";
-            string rejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg109944/";
-            string rejectTCPend = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
-            string rejectUDPend = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+            string exception = "http://192.168.64.2/cgi-bin/luci/command/cfg199944/";
+            string acceptTCP = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Allow101%22%20-j%20ACCEPT";
+            string acceptUDP = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Allow101%22%20-j%20ACCEPT";
             string restartFirewall = "http://192.168.64.2/cgi-bin/luci/command/cfg119944";
 
+            //string unrejectTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
+            //string unrejectUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg139944/";
+            //string unrejectTCPend = "%20-p%20tcp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+            //string unrejectUDPend = "%20-p%20udp%20-m%20comment%20--comment%20%22!fw3%3A%20Block%20100%22%20-j%20reject";
+
+            
 
             Reg reg = new Reg();
             if (status == "NEUTRAL")
@@ -371,6 +430,27 @@ namespace doorApp.View
                 reg.macAddr = MAC;
                 reg.status = status;
                 reg.nickname = "Device " + reg.id;
+
+                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+                {
+                    client.BaseAddress = new Uri(exception + IP + acceptTCP);
+                    HttpResponseMessage response1 = client.GetAsync("").Result;
+                    response1.EnsureSuccessStatusCode();
+                    string result1 = response1.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine("Result: " + result1);
+
+                    client.BaseAddress = new Uri(exception + IP + acceptUDP);
+                    HttpResponseMessage response2 = client.GetAsync("").Result;
+                    response2.EnsureSuccessStatusCode();
+                    string result2 = response2.Content.ReadAsStringAsync().Result;
+                    Console.WriteLine("Result: " + result2);
+
+                    //client.BaseAddress = new Uri(restartFirewall);
+                    //HttpResponseMessage response3 = client.GetAsync("").Result;
+                    //response3.EnsureSuccessStatusCode();
+                    //string result3 = response3.Content.ReadAsStringAsync().Result;
+                    //Console.WriteLine("Result: " + result3);
+                }
             }
             else if (status == "DENY")
             {
@@ -379,26 +459,6 @@ namespace doorApp.View
                 reg.status = status;
                 reg.nickname = "Device " + reg.id;
 
-                using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
-                {
-                    client.BaseAddress = new Uri(rejectTCP + IP + rejectTCPend);
-                    HttpResponseMessage response2 = client.GetAsync("").Result;
-                    response2.EnsureSuccessStatusCode();
-                    string result2 = response2.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine("Result: " + result2);
-
-                    client.BaseAddress = new Uri(rejectUDP + IP + rejectUDPend);
-                    HttpResponseMessage response3 = client.GetAsync("").Result;
-                    response3.EnsureSuccessStatusCode();
-                    string result3 = response3.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine("Result: " + result3);
-
-                    client.BaseAddress = new Uri(restartFirewall);
-                    HttpResponseMessage response4 = client.GetAsync("").Result;
-                    response4.EnsureSuccessStatusCode();
-                    string result4 = response3.Content.ReadAsStringAsync().Result;
-                    Console.WriteLine("Result: " + result4);
-                }
             }
             int x = 0;
             try
@@ -510,6 +570,32 @@ namespace doorApp.View
                 string result3 = response3.Content.ReadAsStringAsync().Result;
                 Console.WriteLine("Result: " + result3);
             }
+
+        }
+
+        private void unblockAllIP()
+        {
+            // This will be currently hard coded for the static domain: 192.168.68.1
+            // It will start with *.*.*.3 and above all the way to *.*.*.255
+            string acceptAllTCP = "http://192.168.64.2/cgi-bin/luci/command/cfg179944";
+            string acceptAllUDP = "http://192.168.64.2/cgi-bin/luci/command/cfg189944";
+
+            using (var client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }))
+            {
+                client.BaseAddress = new Uri(acceptAllTCP);
+                HttpResponseMessage response1 = client.GetAsync("").Result;
+                response1.EnsureSuccessStatusCode();
+                string result1 = response1.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result1);
+
+                client.BaseAddress = new Uri(acceptAllUDP);
+                HttpResponseMessage response2 = client.GetAsync("").Result;
+                response2.EnsureSuccessStatusCode();
+                string result2 = response2.Content.ReadAsStringAsync().Result;
+                Console.WriteLine("Result: " + result2);
+            }
+
+
 
         }
 
