@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:swipeCardView="clr-namespace:MLToolkit.Forms.SwipeCardView;assembly=MLToolkit.Forms.SwipeCardView"
+             BackgroundColor="#EEE"
+             Title ="Incoming Requests"
+             x:Class="doorApp.View.SwipePage">
+    <ContentPage.Content>
+        <StackLayout Padding="10">
+            <swipeCardView:SwipeCardView
+                x:Name="SwipeCardView"
+                ItemsSource="{Binding Devices}"
+                HorizontalOptions="FillAndExpand" 
+                VerticalOptions="FillAndExpand"
+                SwipedCommand="{Binding SwipedCommand}"
+                DraggingCommand="{Binding DraggingCommand}"
+                Threshold="100"
+                SupportedSwipeDirections="Left, Right"
+                SupportedDraggingDirections="Left, Right, Up, Down"
+                >
+                <swipeCardView:SwipeCardView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame CornerRadius="10" Padding="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                            <StackLayout HorizontalOptions="Center" VerticalOptions="FillAndExpand">
+                                <Label Text="{Binding name}" FontSize="Large" />
+                                <Label Text="{Binding ipAddress}" FontSize="Large" />
+                                <Label Text="{Binding macAddress}" FontSize="Large" />
+                                <Label Text="{Binding status}" FontSize="Large" />
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </swipeCardView:SwipeCardView.ItemTemplate>
+            </swipeCardView:SwipeCardView>
+            <!--<Label Text="Swipe left or right to reject or allow device" HorizontalOptions="CenterAndExpand" />-->
+            
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                <Button Text="Reject"
+                        BackgroundColor="red"
+                        Clicked="OnRejectClicked"></Button>
+                <Button Text="Refresh" 
+                        BackgroundColor="AliceBlue"
+                        Command="{Binding RefreshCommand}"></Button>
+                <Button Text="Accept"
+                        BackgroundColor="LightGreen"
+                        Clicked="OnAcceptClicked"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

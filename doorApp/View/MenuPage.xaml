@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:view="clr-namespace:doorApp.View;assembly=doorApp"
+             x:Class="doorApp.View.MenuPage"
+             >
+    <ContentPage.Content>
+        <StackLayout>
+            <Button 
+                    BackgroundColor="BurlyWood"
+                    Text="Device List" 
+                    TextColor="Black"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:DeviceListPage}"
+                    />
+        <Button 
+                    BackgroundColor="BlanchedAlmond"
+                    Text="Time Operability"
+                    TextColor="Black"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:TimeOperabilityPage}"
+                    />
+        <Button 
+                    BackgroundColor="AliceBlue"
+                    Text="Swipe Page"
+                    TextColor="Black"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:SwipePage}"
+                    />
+        <Button 
+                    BackgroundColor="AliceBlue"
+                    Text="Extra Page"
+                    TextColor="Black"
+                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
+                    />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

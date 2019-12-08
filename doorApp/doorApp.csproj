@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="App.config" />
   </ItemGroup>
 
@@ -37,14 +43,35 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="View\Page1.xaml">
+    <EmbeddedResource Update="View\OldDeviceListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\Page2.xaml">
+    <EmbeddedResource Update="View\DeviceListPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="View\Page3.xaml">
+    <EmbeddedResource Update="View\TimeOperabilityPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="View\SwipePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="View\DeviceListPage.xaml.cs">
+      <DependentUpon>DeviceListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\OldDeviceListPage.xaml.cs">
+      <DependentUpon>OldDeviceListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\SwipePage.xaml.cs">
+      <DependentUpon>SwipePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\TimeOperabilityPage.xaml.cs">
+      <DependentUpon>TimeOperabilityPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="View\MenuPage.xaml.cs">
+      <DependentUpon>MenuPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

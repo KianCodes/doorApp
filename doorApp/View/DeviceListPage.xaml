@@ -5,32 +5,43 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              Title="Device List"
-             x:Class="doorApp.View.Page2">
+             x:Class="doorApp.View.DeviceListPage">
     <ContentPage.Content>
         <AbsoluteLayout x:Name="absLayout">
             
-            <ScrollView   AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
+            <ScrollView
+                AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1">
 
-                <StackLayout x:Name="stackTest">
+                <StackLayout
+                    Margin="25,40,25,25"
+                    x:Name="stackTest">
                 </StackLayout>
 
             </ScrollView>
 
-            <Button x:Name="btn1" 
+            <Button x:Name="btnRefresh" 
                     Text="Refresh" 
-                    BackgroundColor="ForestGreen"
+                    BackgroundColor="AliceBlue"
                     CornerRadius="0"  
                     TextColor="Black" 
                     FontSize="20" 
-                    AbsoluteLayout.LayoutBounds="0,1, 205,55" 
+                    AbsoluteLayout.LayoutBounds="0,1, 137,55" 
                     AbsoluteLayout.LayoutFlags="PositionProportional" />
-            <Button x:Name="btn2" 
-                    Text="Delete" 
-                    BackgroundColor="PaleVioletRed" 
+            <Button x:Name="btnBlock" 
+                    Text="Block All" 
+                    BackgroundColor="Gainsboro" 
                     CornerRadius="0"  
                     TextColor="Black" 
                     FontSize="20" 
-                    AbsoluteLayout.LayoutBounds="1,1, 205,55" 
+                    AbsoluteLayout.LayoutBounds="0.5,1, 137,55" 
+                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+            <Button x:Name="btnReset" 
+                    Text="Reset" 
+                    BackgroundColor="GhostWhite" 
+                    CornerRadius="0"  
+                    TextColor="Black" 
+                    FontSize="20" 
+                    AbsoluteLayout.LayoutBounds="1,1, 137,55" 
                     AbsoluteLayout.LayoutFlags="PositionProportional" />
         </AbsoluteLayout>
     </ContentPage.Content>

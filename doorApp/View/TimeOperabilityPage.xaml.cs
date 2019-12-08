@@ -10,9 +10,9 @@ using Xamarin.Forms.Xaml;
 namespace doorApp.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Page3 : ContentPage
+    public partial class TimeOperabilityPage : ContentPage
     {
-        public Page3()
+        public TimeOperabilityPage()
         {
             InitializeComponent();
         }

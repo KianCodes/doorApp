@@ -2,25 +2,39 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
              xmlns:view="clr-namespace:doorApp.View;assembly=doorApp"
              x:Class="doorApp.View.MainPage"
-             Title="DOOR Main Menu">
+             Title="Welcome to DOOR">
     <StackLayout>
-        <Button
-                    BackgroundColor="Bisque"
-                    Text="Device List" 
-                    TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:OldDeviceList}"
-                    />
-        <Button 
-                    BackgroundColor="BurlyWood"
-                    Text="New Page" 
-                    TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page2}"
-                    />
-        <Button 
-                    BackgroundColor="DarkSlateBlue"
-                    Text="Other New Page"
-                    TextColor="Black"
-                    Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:Page3}"
-                    />
+            <Image Source="doorLogo.png"
+                   Aspect="AspectFit"
+                  />
+            <ImageButton Source="fingerprint.png"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                         BorderColor="White"
+                         BorderWidth="1"
+                         x:Name="btnFingerprint"
+                         Clicked="btnFingerprint_Clicked">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Scale"
+                            Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Scale"
+                            Value="0.9" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
+            </ImageButton>
+        <Label Text="Press to Enter"
+               HorizontalOptions="Center"/>
     </StackLayout>
 </ContentPage> 

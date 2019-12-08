@@ -22,8 +22,14 @@ namespace doorApp.View
 
         public MainPage()
         {
-            this.BindingContext = new MainPageViewModel(this.Navigation);
+            this.BindingContext = new MenuPageViewModel(this.Navigation);
             InitializeComponent();
+            btnFingerprint.Clicked += BtnFingerprint_Clicked;
+        }
+
+        private void BtnFingerprint_Clicked(object sender, EventArgs e)
+        {
+            fingerprint();
         }
 
 
@@ -37,7 +43,10 @@ namespace doorApp.View
             {
                 var auth = await CrossFingerprint.Current.AuthenticateAsync("Please use your fingerprint for authentication");
                 if (auth.Authenticated)
-                    await DisplayAlert("Success", "Fingerprint authentication success", "OK");
+                {
+                    await Navigation.PushAsync(new MenuPage());
+                    Navigation.RemovePage(this);
+                }
                 else
                 {
                     await DisplayAlert("Failed", "Fingerprint authentication failed, app is closing.", "OK");
@@ -47,6 +56,9 @@ namespace doorApp.View
             }
         }
 
+        private void btnFingerprint_Clicked(object sender, EventArgs e)
+        {
 
+        }
     }
 }

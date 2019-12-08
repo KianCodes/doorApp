@@ -17,20 +17,35 @@ using doorApp.Droid.Model;
 namespace doorApp.View
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class Page2 : ContentPage
+    public partial class DeviceListPage : ContentPage
     {
         int devices = 0;
-        public Page2()
+        public DeviceListPage()
         {
             InitializeComponent();
-            btn1.Clicked += Btn1_Clicked;
+            btnRefresh.Clicked += BtnRefresh_Clicked;
+            btnBlock.Clicked += BtnBlock_Clicked;
+            btnReset.Clicked += BtnReset_Clicked;
         }
 
-        private async void Btn1_Clicked(object sender, EventArgs e)
+        private async void BtnReset_Clicked(object sender, EventArgs e)
+        {
+            bool answer = await DisplayAlert("Would you like to clear the device list?", "All devices currently on the list will lose internet access.", "Yes", "No");
+            
+        }
+
+        private async void BtnBlock_Clicked(object sender, EventArgs e)
+        {
+            bool answer = await DisplayAlert("Would you like to block all devices?", "", "Yes", "No");
+
+        }
+
+        private async void BtnRefresh_Clicked(object sender, EventArgs e)
         {
             newFrame("123", "321", devices + 1);
             devices++;
         }
+
 
 
         private void newFrame(string ip, string mac, int device)
