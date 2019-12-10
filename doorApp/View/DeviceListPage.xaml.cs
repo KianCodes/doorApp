@@ -42,13 +42,13 @@ namespace doorApp.View
 
         private async void BtnRefresh_Clicked(object sender, EventArgs e)
         {
-            newFrame("123", "321", devices + 1);
+            newFrame("192.168.68.4", "08:00:27:87:78:DA","Allowed", devices + 1);
             devices++;
         }
 
 
 
-        private void newFrame(string ip, string mac, int device)
+        private void newFrame(string ip, string mac, string status, int device)
         {
             //stackTest.Children.Clear();
             Frame cardFrame = new Frame
@@ -74,7 +74,7 @@ namespace doorApp.View
                         },
                         new Label
                         {
-                            Text = $"IP Address: {ip}\nMAC Address: {mac}"
+                            Text = $"IP Address: {ip}\nMAC Address: {mac}\nStatus: {status}"
                         }
                     }
                 }

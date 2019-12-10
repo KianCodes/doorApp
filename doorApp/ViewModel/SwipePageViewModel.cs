@@ -52,7 +52,7 @@ namespace doorApp.ViewModel
             this.Devices.Clear();
             // Adding a new device as a card
             for(int i = 1; i <= 10; i++)
-                this.Devices.Add(new Devices { name = $"Device {i}", ipAddress = "IP Address: 192.168.11.11", macAddress = "MAC Address: 192.168.22.22", status = "Status: ACCEPTED/REJECTED" });
+                this.Devices.Add(new Devices { name = $"Device {i}", ipAddress = "IP Address: 192.168.11.11", macAddress = "MAC Address: 08:00:27:87:78:DA", status = "" });
             
         }
         private void OnSwipedCommand(SwipedCardEventArgs eventArgs)

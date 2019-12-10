@@ -6,31 +6,37 @@
              mc:Ignorable="d"
              xmlns:view="clr-namespace:doorApp.View;assembly=doorApp"
              x:Class="doorApp.View.MenuPage"
+             Title="Main Menu"
              >
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout HorizontalOptions="CenterAndExpand"
+                     VerticalOptions="CenterAndExpand">
             <Button 
-                    BackgroundColor="BurlyWood"
+                    BackgroundColor="DimGray"
                     Text="Device List" 
                     TextColor="Black"
+                    FontSize="Large"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:DeviceListPage}"
                     />
         <Button 
-                    BackgroundColor="BlanchedAlmond"
+                    BackgroundColor="LightSlateGray"
                     Text="Time Operability"
                     TextColor="Black"
+            FontSize="Large"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:TimeOperabilityPage}"
                     />
         <Button 
                     BackgroundColor="AliceBlue"
-                    Text="Swipe Page"
+                    Text="Incoming Device Requests"
                     TextColor="Black"
+            FontSize="Large"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:SwipePage}"
                     />
         <Button 
-                    BackgroundColor="AliceBlue"
-                    Text="Extra Page"
+                    BackgroundColor="LightSkyBlue"
+                    Text="Reset Router"
                     TextColor="Black"
+            FontSize="Large"
                     Command="{Binding NavigateCommand}" CommandParameter="{x:Type view:MainPage}"
                     />
         </StackLayout>

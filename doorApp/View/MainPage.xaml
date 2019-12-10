@@ -6,6 +6,8 @@
     <StackLayout>
             <Image Source="doorLogo.png"
                    Aspect="AspectFit"
+                                          HorizontalOptions="Center"
+                       VerticalOptions="Center"
                   />
             <ImageButton Source="fingerprint.png"
                        HorizontalOptions="Center"
